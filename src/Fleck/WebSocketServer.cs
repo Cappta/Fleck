@@ -14,12 +14,12 @@ namespace Fleck
         private readonly IPAddress _locationIP;
         private Action<IWebSocketConnection> _config;
 
-        public WebSocketServer(string location)
-            : this(8181, location)
+        public WebSocketServer(string location, SocketOptionLevel socketOptionLevel, SocketOptionName socketOptionName)
+            : this(8181, location, socketOptionLevel, socketOptionName)
         {
         }
 
-        public WebSocketServer(int port, string location)
+        public WebSocketServer(int port, string location, SocketOptionLevel socketOptionLevel, SocketOptionName socketOptionName)
         {
             var uri = new Uri(location);
             Port = uri.Port > 0 ? uri.Port : port;
@@ -30,7 +30,7 @@ namespace Fleck
             if(!MonoHelper.IsRunningOnMono()){
                   #if __MonoCS__
                   #else
-                    socket.SetSocketOption(SocketOptionLevel.IPv6, SocketOptionName.IPv6Only, false);
+                    socket.SetSocketOption(socketOptionLevel, socketOptionName, false);
                   #endif
             }
             ListenerSocket = new SocketWrapper(socket);
